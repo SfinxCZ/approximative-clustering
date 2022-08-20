@@ -29,21 +29,21 @@ class ApproximativeClustering:
         return labels
 
     def fit_predict(self, X: np.ndarray, y: np.ndarray = None) -> np.ndarray:
-        self.labels_ = -np.ones(X.shape[0], dtype=int)
+        self.labels_ = -np.ones(X.shape[0], dtype=int)  # line #2 in Alg 3.
 
         usable = np.ones(X.shape[0], dtype=bool)
         while np.any(usable):
-            part_idx = self.sample_idx(usable)
+            part_idx = self.sample_idx(usable)  # line #4 in Alg 3.
             part_X = X[part_idx, :]
 
-            cluster_ids = self.cluster_louvain(part_X) + np.max(self.labels_[~usable], initial=0)
+            cluster_ids = self.cluster_louvain(part_X) + np.max(self.labels_[~usable], initial=0)  # line 5 in Alg 3.
             self.labels_[part_idx] = cluster_ids
             usable[part_idx] = False
 
-            for i, s in zip(np.where(usable)[0], X[usable, :]):
-                c = self.find_nn_cluster_id(s, part_X, cluster_ids)
-                if c is not None:
-                    self.labels_[i] = c
+            for i, s in zip(np.where(usable)[0], X[usable, :]):  # line 6
+                c = self.find_nn_cluster_id(s, part_X, cluster_ids)  # line 7
+                if c is not None:  # line 8
+                    self.labels_[i] = c  # line 9
                     usable[i] = False
 
         return self.labels_
